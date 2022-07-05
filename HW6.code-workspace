@@ -1,0 +1,13 @@
+{
+  "folders": [
+	{
+		"path": "../../in-class/Week03/06-Server-Side-APIs"
+	},
+	{
+		"path": "."
+	}
+],
+  "settings": {
+    "liveServer.settings.multiRootWorkspaceName": "WeatherDashboard"
+  }
+}
