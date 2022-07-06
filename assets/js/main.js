@@ -70,6 +70,12 @@ let cityInput = $('#city');
 
 let searchHistory = $('#past-searches');
 
+let currentWeather = $('#currentWeather');
+
+let cardBox = $('#cardBox');
+
+let dailyForecast = $('.dailyForecast');
+
 let formSubHandle = function (e) {
     e.preventDefault();
 
@@ -108,9 +114,74 @@ let getWeatherData = function(location){
                 console.log(response);
                 response.json().then (function (data) {
                     console.log(data);
+                    displayWeather(data);
                 })
             }
         })
+};
+
+let displayWeather = function(weather) {
+    cardBox.empty();
+    dailyForecast.empty();
+    currentWeather.empty();
+    let searchCity = cityInput.val().toUpperCase();
+    let weatherIcon = document.createElement('img')
+    weatherIcon.setAttribute('src', 'http://openweathermap.org/img/wn/' + weather.current.weather[0].icon + '.png');
+    weatherIcon.setAttribute('width', '40');
+    let heading = document.createElement('h3');
+    heading.textContent = searchCity + ': ' + moment().format('l');
+    let temp = document.createElement('span');
+    temp.textContent = 'Temp: ' + weather.current.temp + '℉';
+    let wind = document.createElement('span');
+    wind.textContent = 'Wind: ' + weather.current.wind_speed + "mph";
+    let humidity = document.createElement('span');
+    humidity.textContent = 'Humidity: ' + weather.current.humidity + '%'
+    let uv = document.createElement('span');
+    let index = document.createElement('span');
+    index.textContent = weather.current.uvi
+    if (weather.current.uvi <= 2) {
+        index.setAttribute('style', 'background-color: green; padding: 0 10px; border-radius: 4px;')
+    } else if (3 <= weather.current.uvi <= 5) {
+        index.setAttribute('style', 'background-color: yellow; padding: 0 10px; border-radius: 4px;')
+    } else if (5 < weather.current.uvi < 8) {
+        index.setAttribute('style', 'background-color: orange; padding: 0 10px; border-radius: 4px;')
+    } else if (weather.current.uvi <= 10) {
+        index.setAttribute('style', 'background-color: red; padding: 0 10px; border-radius: 4px;')
+    }
+    uv.textContent = "UV Index: ";
+    currentWeather.append(heading, weatherIcon);
+    heading.append(weatherIcon);
+    currentWeather.append(temp);
+    currentWeather.append(wind);
+    currentWeather.append(humidity);
+    currentWeather.append(uv);
+    uv.append(index);
+    let unix = weather.daily[0].sunrise;
+    // console.log(moment.unix(unix));
+    console.log(unix);
+    let fiveDay = document.createElement('h4');
+    fiveDay.textContent = "5-Day Forecast:"
+    cardBox.append(fiveDay);
+    for (let i = 0; i < 5; i++) {
+        // let dayIcon = weather.daily[i].weather[0].icon
+        // let dayDate = 
+        let dayTempVal = weather.daily[i].temp.day;
+        let dayWindVal = weather.daily[i].wind_speed;
+        let dayHumidityVal = weather.daily[i].humidity;
+        let dayCard = document.createElement('div');
+        dayCard.setAttribute('style', 'height: 175px; width: 150px; border: solid black 1px; background-color: gray; color: white');
+        dayCard.setAttribute('class', 'card');
+        let dayTemp = document.createElement('span');
+        let dayWind = document.createElement('span');
+        let dayHumidity = document.createElement('span');
+        dayTemp.textContent = 'Temp: ' + dayTempVal + '℉'
+        dayWind.textContent = 'Wind: ' + dayWindVal + 'mph'
+        dayHumidity.textContent = 'Humidity: ' + dayHumidityVal + '%'
+        
+        cardBox.append(dayCard);
+        dayCard.append(dayTemp, dayWind, dayHumidity);
+    }
+
 }
 
 citySelection.submit(formSubHandle);

@@ -31,7 +31,7 @@
             >Search for a city:</label
           >
           <input
-            style="margin-bottom: 10px"
+            style="margin-bottom: 10px; width: 100%"
             type="text"
             class="form-input"
             id="city"
@@ -46,14 +46,32 @@
             Search
           </button>
         </form>
-        <div class="list-group" id="past-searches">
-          <ul class="stateList"></ul>
-        </div>
+        <div class="list-group" id="past-searches"></div>
       </div>
-      <div
-        class="main col-md-8 jumbotron jumbotron-cumstom border border-dark"
-        style="height: 40vh; width: 100%"
-      ></div>
+      <div class="container col-md-8">
+        <div
+          class="main border border-dark"
+          style="
+            height: 150px;
+            width: 100%;
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            padding: 0 0 10px 10px;
+          "
+          id="currentWeather"
+        ></div>
+
+        <div id="cardBox"></div>
+        <div
+          class="dailyForecast"
+          style="
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+          "
+        ></div>
+      </div>
     </main>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
