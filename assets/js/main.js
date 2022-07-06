@@ -70,11 +70,15 @@ let cityInput = $('#city');
 
 let searchHistory = $('#past-searches');
 
+let searchBtn = $('.searchBtn')
+
 let currentWeather = $('#currentWeather');
 
 let cardBox = $('#cardBox');
 
 let dailyForecast = $('.dailyForecast');
+
+let historyArr = [];
 
 let formSubHandle = function (e) {
     e.preventDefault();
@@ -87,8 +91,12 @@ let formSubHandle = function (e) {
         alert('Please enter a city');
     };
 
+    historyArr.push(cityName);
+
+    localStorage.setItem('cities', historyArr);
+
     let historyButton = document.createElement('button');
-    historyButton.setAttribute('class', 'btn btn-secondary mb-2' || 'style', 'width: 100%; margin: 5px 0 5px 0;')
+    historyButton.setAttribute('class', 'btn btn-secondary mb-2 searchBtn'); historyButton.setAttribute('style', 'width: 100%; margin: 5px 0 5px 0;'); historyButton.setAttribute('type', 'button'); historyButton.setAttribute('name', cityName);
     historyButton.textContent = cityName;
     searchHistory.append(historyButton);
 
@@ -170,28 +178,42 @@ let displayWeather = function (weather) {
     fiveDay.textContent = "5-Day Forecast:"
     cardBox.append(fiveDay);
     for (let i = 1; i < 6; i++) {
-        // let dayIcon = weather.daily[i].weather[0].icon
+        let dayIconVal = weather.daily[i].weather[0].icon
         let unix = weather.daily[i].sunrise;
-        let dayDateVal = moment.unix(unix).format('l')
         let dayTempVal = weather.daily[i].temp.day;
         let dayWindVal = weather.daily[i].wind_speed;
         let dayHumidityVal = weather.daily[i].humidity;
         let dayCard = document.createElement('div');
-        dayCard.setAttribute('style', 'height: 175px; width: 150px; border: solid black 1px; background-color: gray; color: white; margin: 10px; display: flex; flex-direction: column; justify-content: space-between; padding: 5px' || 'class', 'card col-md-2');
-        // dayCard.setAttribute('class', 'card col-md-2');
+        dayCard.setAttribute('style', 'height: 175px; width: 150px; border: solid black 1px; border-radius: 5px; background-color: gray; color: white; margin: 20px; display: flex; flex-direction: column; justify-content: space-between; padding: 5px');
         let dayDate = document.createElement('span'); dayDate.setAttribute('style', 'font-weight: bold; font-size: 1.2rem');
+        let dayIcon = document.createElement('img');
         let dayTemp = document.createElement('span');
         let dayWind = document.createElement('span');
         let dayHumidity = document.createElement('span');
-        dayDate.textContent = dayDateVal;
+        dayDate.textContent = moment.unix(unix).format('l');
+        dayIcon.setAttribute('src', 'http://openweathermap.org/img/wn/' + dayIconVal + '.png');
+        dayIcon.setAttribute('width', '40');
         dayTemp.textContent = 'Temp: ' + dayTempVal + '℉'
         dayWind.textContent = 'Wind: ' + dayWindVal + 'mph'
         dayHumidity.textContent = 'Humidity: ' + dayHumidityVal + '%'
 
         cardBox.append(dayCard);
-        dayCard.append(dayDate, dayTemp, dayWind, dayHumidity);
+        dayCard.append(dayDate, dayIcon, dayTemp, dayWind, dayHumidity);
     }
 
 }
 
+// let historyBtn = function () {
+//     console.log('hello');
+// }
+
 citySelection.submit(formSubHandle);
+searchHistory.on('click', searchBtn, function (e) {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    let searchCity = this.attr('name');
+    console.log(searchCity);
+    // if (searchCity) {
+    //     getGeoData(searchCity);
+    // }
+})
