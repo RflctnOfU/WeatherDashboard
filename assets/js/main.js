@@ -96,7 +96,7 @@ let formSubHandle = function (e) {
     localStorage.setItem('cities', historyArr);
 
     let historyButton = document.createElement('button');
-    historyButton.setAttribute('class', 'btn btn-secondary mb-2 searchBtn'); historyButton.setAttribute('style', 'width: 100%; margin: 5px 0 5px 0;'); historyButton.setAttribute('type', 'button'); historyButton.setAttribute('name', cityName);
+    historyButton.setAttribute('class', 'btn btn-secondary mb-2 searchBtn'); historyButton.setAttribute('style', 'width: 100%; margin: 5px 0 5px 0;'); historyButton.setAttribute('type', 'button'); historyButton.setAttribute('id', cityName);
     historyButton.textContent = cityName;
     searchHistory.append(historyButton);
 
@@ -208,10 +208,10 @@ let displayWeather = function (weather) {
 // }
 
 citySelection.submit(formSubHandle);
-searchHistory.on('click', searchBtn, function (e) {
+searchHistory.on('click', searchBtn.self, function (e) {
     e.preventDefault();
     e.stopImmediatePropagation();
-    let searchCity = this.attr('name');
+    let searchCity = this.textContent;
     console.log(searchCity);
     // if (searchCity) {
     //     getGeoData(searchCity);
