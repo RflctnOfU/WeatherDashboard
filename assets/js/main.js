@@ -23,12 +23,12 @@
 //     let geo = 'http://api.openweathermap.org/geo/1.0/direct?q='
 
 //     let city;
-    
+
 //     search.click(function (){
 //         weather += city;
 //         weather += key;
 //     })       
-    
+
 //     fetch(geo, {
 //     })
 //     .then(function (response){
@@ -83,9 +83,15 @@ let formSubHandle = function (e) {
 
     if (cityName) {
         getGeoData(cityName);
-    }   else  {
+    } else {
         alert('Please enter a city');
     };
+
+    let historyButton = document.createElement('button');
+    historyButton.setAttribute('class', 'btn btn-secondary mb-2' || 'style', 'width: 100%; margin: 5px 0 5px 0;')
+    historyButton.textContent = cityName;
+    searchHistory.append(historyButton);
+
 
     // localStorage.setItem()
 };
@@ -105,14 +111,14 @@ let getGeoData = function (city) {
         })
 };
 
-let getWeatherData = function(location){
+let getWeatherData = function (location) {
     let weatherUrl = 'https://api.openweathermap.org/data/2.5/onecall?lat=' + location[0].lat + '&lon=' + location[0].lon + '&appid=e72f05f482b1c3bc3c0a5a8e46b6c361&units=imperial'
 
     fetch(weatherUrl)
         .then(function (response) {
             if (response.ok) {
                 console.log(response);
-                response.json().then (function (data) {
+                response.json().then(function (data) {
                     console.log(data);
                     displayWeather(data);
                 })
@@ -120,7 +126,7 @@ let getWeatherData = function(location){
         })
 };
 
-let displayWeather = function(weather) {
+let displayWeather = function (weather) {
     cardBox.empty();
     dailyForecast.empty();
     currentWeather.empty();
@@ -156,30 +162,34 @@ let displayWeather = function(weather) {
     currentWeather.append(humidity);
     currentWeather.append(uv);
     uv.append(index);
-    let unix = weather.daily[0].sunrise;
-    // console.log(moment.unix(unix));
-    console.log(unix);
+    let unix = weather.daily.sunrise;
+    // console.log(moment.unix(unix).format('l'));
+    // console.log(unix);
     let fiveDay = document.createElement('h4');
+    fiveDay.setAttribute('class', 'col-12')
     fiveDay.textContent = "5-Day Forecast:"
     cardBox.append(fiveDay);
-    for (let i = 0; i < 5; i++) {
+    for (let i = 1; i < 6; i++) {
         // let dayIcon = weather.daily[i].weather[0].icon
-        // let dayDate = 
+        let unix = weather.daily[i].sunrise;
+        let dayDateVal = moment.unix(unix).format('l')
         let dayTempVal = weather.daily[i].temp.day;
         let dayWindVal = weather.daily[i].wind_speed;
         let dayHumidityVal = weather.daily[i].humidity;
         let dayCard = document.createElement('div');
-        dayCard.setAttribute('style', 'height: 175px; width: 150px; border: solid black 1px; background-color: gray; color: white');
-        dayCard.setAttribute('class', 'card');
+        dayCard.setAttribute('style', 'height: 175px; width: 150px; border: solid black 1px; background-color: gray; color: white; margin: 10px; display: flex; flex-direction: column; justify-content: space-between; padding: 5px' || 'class', 'card col-md-2');
+        // dayCard.setAttribute('class', 'card col-md-2');
+        let dayDate = document.createElement('span'); dayDate.setAttribute('style', 'font-weight: bold; font-size: 1.2rem');
         let dayTemp = document.createElement('span');
         let dayWind = document.createElement('span');
         let dayHumidity = document.createElement('span');
+        dayDate.textContent = dayDateVal;
         dayTemp.textContent = 'Temp: ' + dayTempVal + '℉'
         dayWind.textContent = 'Wind: ' + dayWindVal + 'mph'
         dayHumidity.textContent = 'Humidity: ' + dayHumidityVal + '%'
-        
+
         cardBox.append(dayCard);
-        dayCard.append(dayTemp, dayWind, dayHumidity);
+        dayCard.append(dayDate, dayTemp, dayWind, dayHumidity);
     }
 
 }
