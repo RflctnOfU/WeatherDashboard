@@ -34,7 +34,7 @@ let formSubHandle = function (e) {
     e.preventDefault();
 
     let cityName = cityInput.val();
-
+    localStorage.setItem('cityName', cityName.toUpperCase());
     if (cityName) {
         getGeoData(cityName);
     } else {
@@ -91,11 +91,11 @@ let displayWeather = function (weather) {
     weatherIcon.setAttribute('src', 'https://openweathermap.org/img/wn/' + weather.current.weather[0].icon + '.png');
     weatherIcon.setAttribute('width', '40');
     let heading = document.createElement('h3');
-    if (cityInput.value = '') {
-        heading.textContent = historyVal + ': ' + moment().format('l');
-    } else {
-        heading.textContent = searchCity + ': ' + moment().format('l');
-    }
+    // if (cityInput.value) {
+    //     heading.textContent = searchCity + ': ' + moment().format('l');
+    // } else {
+    heading.textContent = localStorage.getItem('cityName') + ': ' + moment().format('l');
+    // }
     let temp = document.createElement('span');
     temp.textContent = 'Temp: ' + weather.current.temp + '℉';
     let wind = document.createElement('span');
@@ -156,10 +156,11 @@ citySelection.submit(formSubHandle);
 searchHistory.on('click', searchBtn.self, function (e) {
     e.preventDefault();
     e.stopImmediatePropagation();
-    let historyCity = e.target.textContent.toUpperCase();
-    historyVal = historyCity;
-    if (historyCity) {
-        getGeoData(historyCity);
+    historyVal = e.target.textContent.toUpperCase();
+    localStorage.setItem('cityName', historyVal);
+    console.log(historyVal)
+    if (historyVal) {
+        getGeoData(historyVal);
     }
 });
 
