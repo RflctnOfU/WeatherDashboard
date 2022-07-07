@@ -19,12 +19,14 @@ let historyArr = [];
 // start up function...checks local storage to see if any searches have previously been done, and if so, displays the previous search cities
 let init = function () {
     let btnArr = JSON.parse(localStorage.getItem('cities'));
-    historyArr = btnArr;
-    for (let i = 0; i < btnArr.length; i++) {
-        let historyButton = document.createElement('button');
-        historyButton.setAttribute('class', 'btn btn-secondary mb-2 searchBtn'); historyButton.setAttribute('style', 'width: 100%; margin: 5px 0 5px 0;'); historyButton.setAttribute('type', 'button'); historyButton.setAttribute('id', btnArr[i]);
-        historyButton.textContent = btnArr[i];
-        searchHistory.append(historyButton);
+    if (btnArr !== null) {
+        for (let i = 0; i < btnArr.length; i++) {
+            let historyButton = document.createElement('button');
+            historyButton.setAttribute('class', 'btn btn-secondary mb-2 searchBtn'); historyButton.setAttribute('style', 'width: 100%; margin: 5px 0 5px 0;'); historyButton.setAttribute('type', 'button'); historyButton.setAttribute('id', btnArr[i]);
+            historyButton.textContent = btnArr[i];
+            searchHistory.append(historyButton);
+            historyArr = btnArr;
+        }
     }
 }
 // search event handler - begins the fetch process
