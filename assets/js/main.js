@@ -91,11 +91,7 @@ let displayWeather = function (weather) {
     weatherIcon.setAttribute('src', 'https://openweathermap.org/img/wn/' + weather.current.weather[0].icon + '.png');
     weatherIcon.setAttribute('width', '40');
     let heading = document.createElement('h3');
-    // if (cityInput.value) {
-    //     heading.textContent = searchCity + ': ' + moment().format('l');
-    // } else {
     heading.textContent = localStorage.getItem('cityName') + ': ' + moment().format('l');
-    // }
     let temp = document.createElement('span');
     temp.textContent = 'Temp: ' + weather.current.temp + '℉';
     let wind = document.createElement('span');
