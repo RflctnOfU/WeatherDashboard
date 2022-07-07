@@ -78,7 +78,21 @@ let cardBox = $('#cardBox');
 
 let dailyForecast = $('.dailyForecast');
 
+let historyVal;
+
 let historyArr = [];
+
+let init = function () {
+    console.log(historyArr)
+    let btnArr = JSON.parse(localStorage.getItem('cities'));
+    historyArr = btnArr;
+    for (let i = 0; i < btnArr.length; i++) {
+        let historyButton = document.createElement('button');
+        historyButton.setAttribute('class', 'btn btn-secondary mb-2 searchBtn'); historyButton.setAttribute('style', 'width: 100%; margin: 5px 0 5px 0;'); historyButton.setAttribute('type', 'button'); historyButton.setAttribute('id', btnArr[i]);
+        historyButton.textContent = btnArr[i];
+        searchHistory.append(historyButton);
+    }
+}
 
 let formSubHandle = function (e) {
     e.preventDefault();
@@ -93,15 +107,14 @@ let formSubHandle = function (e) {
 
     historyArr.push(cityName);
 
-    localStorage.setItem('cities', historyArr);
+    localStorage.setItem('cities', JSON.stringify(historyArr));
+    console.log(localStorage.getItem('cities'));
 
     let historyButton = document.createElement('button');
     historyButton.setAttribute('class', 'btn btn-secondary mb-2 searchBtn'); historyButton.setAttribute('style', 'width: 100%; margin: 5px 0 5px 0;'); historyButton.setAttribute('type', 'button'); historyButton.setAttribute('id', cityName);
     historyButton.textContent = cityName;
     searchHistory.append(historyButton);
-
-
-    // localStorage.setItem()
+    console.log(historyArr);
 };
 
 let getGeoData = function (city) {
@@ -143,7 +156,11 @@ let displayWeather = function (weather) {
     weatherIcon.setAttribute('src', 'http://openweathermap.org/img/wn/' + weather.current.weather[0].icon + '.png');
     weatherIcon.setAttribute('width', '40');
     let heading = document.createElement('h3');
-    heading.textContent = searchCity + ': ' + moment().format('l');
+    if (cityInput.value = '') {
+        heading.textContent = historyVal + ': ' + moment().format('l');
+    } else {
+        heading.textContent = searchCity + ': ' + moment().format('l');
+    }
     let temp = document.createElement('span');
     temp.textContent = 'Temp: ' + weather.current.temp + '℉';
     let wind = document.createElement('span');
@@ -171,8 +188,6 @@ let displayWeather = function (weather) {
     currentWeather.append(uv);
     uv.append(index);
     let unix = weather.daily.sunrise;
-    // console.log(moment.unix(unix).format('l'));
-    // console.log(unix);
     let fiveDay = document.createElement('h4');
     fiveDay.setAttribute('class', 'col-12')
     fiveDay.textContent = "5-Day Forecast:"
@@ -196,24 +211,20 @@ let displayWeather = function (weather) {
         dayTemp.textContent = 'Temp: ' + dayTempVal + '℉'
         dayWind.textContent = 'Wind: ' + dayWindVal + 'mph'
         dayHumidity.textContent = 'Humidity: ' + dayHumidityVal + '%'
-
         cardBox.append(dayCard);
         dayCard.append(dayDate, dayIcon, dayTemp, dayWind, dayHumidity);
     }
-
 }
-
-// let historyBtn = function () {
-//     console.log('hello');
-// }
 
 citySelection.submit(formSubHandle);
 searchHistory.on('click', searchBtn.self, function (e) {
     e.preventDefault();
     e.stopImmediatePropagation();
-    let searchCity = this.textContent;
-    console.log(searchCity);
-    // if (searchCity) {
-    //     getGeoData(searchCity);
-    // }
-})
+    let historyCity = e.target.textContent.toUpperCase();
+    historyVal = historyCity;
+    if (historyCity) {
+        getGeoData(historyCity);
+    }
+});
+
+init();
