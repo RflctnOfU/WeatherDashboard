@@ -1,69 +1,4 @@
-// geocoding api call -- http://api.openweathermap.org/geo/1.0/direct?q={city name},{state code},{country code}&limit={limit}&appid={API key}
-
-// one call api call -- https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&exclude={part}&appid={API key}
-
-// let formEl = $('#citySelection');
-
-// let search = $('.btn');
-
-
-
-// let weatherUrl = weather + lat + lon + key
-
-// let geocodingSearch = 'http://api.openweathermap.org/geo/1.0/direct?q=tampa,fl,us&limit=5&appid=e72f05f482b1c3bc3c0a5a8e46b6c361'
-
-// function getWeatherData() {
-
-//     let key = "&appid=e72f05f482b1c3bc3c0a5a8e46b6c361&units=imperial";
-
-//     let forecast = "https://api.openweathermap.org/data/2.5/forecast?q="
-
-//     let weather = "https://api.openweathermap.org/data/2.5/weather?q="
-
-//     let geo = 'http://api.openweathermap.org/geo/1.0/direct?q='
-
-//     let city;
-
-//     search.click(function (){
-//         weather += city;
-//         weather += key;
-//     })       
-
-//     fetch(geo, {
-//     })
-//     .then(function (response){
-//         return response.json()
-//     })
-//     .then(function (data){
-//         console.log('here we go again');
-
-
-//         console.log(data[0].lat);
-//         console.log(data[0].lon);
-//         // lat += data[0].lat;
-//         // lon += data[0].lon;
-//         // weather += lat;
-//         // weather += lon;
-//         // weather += key;
-//     });
-//     fetch(forecast)
-//     .then (function (response){
-//         return response.json()
-//     })
-//     .then (function(data){
-//         console.log(data);
-//     })
-// };
-
-
-
-// getWeatherData();
-
-
-// City (date) \n temp: \n wind: \n Humidity: \n UV index:
-
-// 5-day Forecast:
-
+// global variables 
 let citySelection = $('#citySelection');
 
 let cityInput = $('#city');
@@ -81,9 +16,8 @@ let dailyForecast = $('.dailyForecast');
 let historyVal;
 
 let historyArr = [];
-
+// start up function...checks local storage to see if any searches have previously been done, and if so, displays the previous search cities
 let init = function () {
-    console.log(historyArr)
     let btnArr = JSON.parse(localStorage.getItem('cities'));
     historyArr = btnArr;
     for (let i = 0; i < btnArr.length; i++) {
@@ -93,7 +27,7 @@ let init = function () {
         searchHistory.append(historyButton);
     }
 }
-
+// search event handler - begins the fetch process
 let formSubHandle = function (e) {
     e.preventDefault();
 
@@ -104,21 +38,20 @@ let formSubHandle = function (e) {
     } else {
         alert('Please enter a city');
     };
-
+    //updating array for local storage
     historyArr.push(cityName);
 
     localStorage.setItem('cities', JSON.stringify(historyArr));
-    console.log(localStorage.getItem('cities'));
-
+    // creates buttons for search history
     let historyButton = document.createElement('button');
     historyButton.setAttribute('class', 'btn btn-secondary mb-2 searchBtn'); historyButton.setAttribute('style', 'width: 100%; margin: 5px 0 5px 0;'); historyButton.setAttribute('type', 'button'); historyButton.setAttribute('id', cityName);
     historyButton.textContent = cityName;
     searchHistory.append(historyButton);
     console.log(historyArr);
 };
-
+// gets geolocation data to feed latitude and longitude to weather api
 let getGeoData = function (city) {
-    let geoUrl = 'http://api.openweathermap.org/geo/1.0/direct?q=' + city + '&appid=e72f05f482b1c3bc3c0a5a8e46b6c361';
+    let geoUrl = 'https://api.openweathermap.org/geo/1.0/direct?q=' + city + '&appid=e72f05f482b1c3bc3c0a5a8e46b6c361';
 
     fetch(geoUrl)
         .then(function (response) {
@@ -131,7 +64,7 @@ let getGeoData = function (city) {
             }
         })
 };
-
+// weather api fetch
 let getWeatherData = function (location) {
     let weatherUrl = 'https://api.openweathermap.org/data/2.5/onecall?lat=' + location[0].lat + '&lon=' + location[0].lon + '&appid=e72f05f482b1c3bc3c0a5a8e46b6c361&units=imperial'
 
@@ -146,14 +79,14 @@ let getWeatherData = function (location) {
             }
         })
 };
-
+// display the data retrieved from api
 let displayWeather = function (weather) {
     cardBox.empty();
     dailyForecast.empty();
     currentWeather.empty();
     let searchCity = cityInput.val().toUpperCase();
     let weatherIcon = document.createElement('img')
-    weatherIcon.setAttribute('src', 'http://openweathermap.org/img/wn/' + weather.current.weather[0].icon + '.png');
+    weatherIcon.setAttribute('src', 'https://openweathermap.org/img/wn/' + weather.current.weather[0].icon + '.png');
     weatherIcon.setAttribute('width', '40');
     let heading = document.createElement('h3');
     if (cityInput.value = '') {
@@ -206,7 +139,7 @@ let displayWeather = function (weather) {
         let dayWind = document.createElement('span');
         let dayHumidity = document.createElement('span');
         dayDate.textContent = moment.unix(unix).format('l');
-        dayIcon.setAttribute('src', 'http://openweathermap.org/img/wn/' + dayIconVal + '.png');
+        dayIcon.setAttribute('src', 'https://openweathermap.org/img/wn/' + dayIconVal + '.png');
         dayIcon.setAttribute('width', '40');
         dayTemp.textContent = 'Temp: ' + dayTempVal + '℉'
         dayWind.textContent = 'Wind: ' + dayWindVal + 'mph'
@@ -215,8 +148,9 @@ let displayWeather = function (weather) {
         dayCard.append(dayDate, dayIcon, dayTemp, dayWind, dayHumidity);
     }
 }
-
+//click event for form submission
 citySelection.submit(formSubHandle);
+//brings previously searched city names back into the fetch process
 searchHistory.on('click', searchBtn.self, function (e) {
     e.preventDefault();
     e.stopImmediatePropagation();
